@@ -116,6 +116,7 @@ bool SparkFun_VL53L5CX::setAddress(uint8_t newAddress)
     if (result == 0)
     {
         VL53L5CX_i2c.setAddress(newAddress); // Update driver's knowledg of address
+        address = newAddress;
 
         result |= VL53L5CX_i2c.writeSingleByte(0x7fff, 0x02);
         return true;
