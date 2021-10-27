@@ -109,14 +109,12 @@ uint8_t SparkFun_VL53L5CX_IO::readMultipleBytes(uint16_t registerAddress, uint8_
 
 uint8_t SparkFun_VL53L5CX_IO::readSingleByte(uint16_t registerAddress)
 {
-    byte result;
     _i2cPort->beginTransmission(_address);
     _i2cPort->write(highByte(registerAddress));
     _i2cPort->write(lowByte(registerAddress));
     _i2cPort->endTransmission();
     _i2cPort->requestFrom(_address, 1U);
-    result = _i2cPort->read();
-    return result;
+    return _i2cPort->read();
 }
 
 uint8_t SparkFun_VL53L5CX_IO::writeSingleByte(uint16_t registerAddress, uint8_t const value)
