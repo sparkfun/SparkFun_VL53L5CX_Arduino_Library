@@ -264,7 +264,7 @@ uint8_t SparkFun_VL53L5CX::getResolution()
     return (uint8_t)SF_VL53L5CX_RANGING_RESOLUTION::ERROR;
 }
 
-bool SparkFun_VL53L5CX::setRangingResolution(uint8_t resolution)
+bool SparkFun_VL53L5CX::setResolution(uint8_t resolution)
 {
     clearErrorStruct();
 

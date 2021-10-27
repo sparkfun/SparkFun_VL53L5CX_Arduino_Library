@@ -105,7 +105,7 @@ public:
 
     // Returns true if the sensor's ranging resolution was changed accordingly or false otherwise.
     // If this function returns false an error entry will be stored in the lastError struct.
-    bool setRangingResolution(uint8_t resolution);
+    bool setResolution(uint8_t resolution);
 
     // Returns true if the ranging data was read from the sensor or false otherwise.
     // Data will be stored in the VL53L5CX_ResultsData struct passed as a pointer.
