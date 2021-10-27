@@ -29,42 +29,42 @@
 class SparkFun_VL53L5CX_IO
 {
 private:
-    // I2C instance
-    TwoWire *_i2cPort;
+  // I2C instance
+  TwoWire *_i2cPort;
 
-    // Sensor address
-    uint8_t _address;
+  // Sensor address
+  uint8_t _address;
 
-    // I2C maximum packet size
-    uint8_t wireMaxPacketSize = I2C_BUFFER_SIZE;
+  // I2C maximum packet size
+  uint8_t wireMaxPacketSize = I2C_BUFFER_SIZE;
 
 public:
-    // Default constructor
-    SparkFun_VL53L5CX_IO(){};
+  // Default constructor
+  SparkFun_VL53L5CX_IO(){};
 
-    // Begin two wire interface
-    bool begin(byte address, TwoWire &wirePort);
+  // Begin two wire interface
+  bool begin(byte address, TwoWire &wirePort);
 
-    // Return true if we get a reply from the I2C device.
-    bool isConnected();
+  // Return true if we get a reply from the I2C device.
+  bool isConnected();
 
-    // Read a single byte from a register.
-    uint8_t readSingleByte(uint16_t registerAddress);
+  // Read a single byte from a register.
+  uint8_t readSingleByte(uint16_t registerAddress);
 
-    // Write a single byte into a register.
-    uint8_t writeSingleByte(uint16_t registerAddress, uint8_t value);
+  // Write a single byte into a register.
+  uint8_t writeSingleByte(uint16_t registerAddress, uint8_t value);
 
-    // Read multiple bytes from a register into buffer byte array.
-    uint8_t readMultipleBytes(uint16_t registerAddress, uint8_t *buffer, uint32_t packetLength);
+  // Read multiple bytes from a register into buffer byte array.
+  uint8_t readMultipleBytes(uint16_t registerAddress, uint8_t *buffer, uint16_t bufferSize);
 
-    // Write multiple bytes to register from buffer byte array.
-    uint8_t writeMultipleBytes(uint16_t registerAddress, uint8_t *buffer, uint32_t packetLength);
+  // Write multiple bytes to register from buffer byte array.
+  uint8_t writeMultipleBytes(uint16_t registerAddress, uint8_t *buffer, uint16_t bufferSize);
 
-    // Get I2C maximum packet size
-    uint8_t getMaxPacketSize() { return wireMaxPacketSize; }
+  // Get I2C maximum packet size
+  uint8_t getMaxPacketSize() { return wireMaxPacketSize; }
 
-    // Set I2C maximum packet size
-    void setMaxPacketSize(uint8_t newSize) { wireMaxPacketSize = newSize; }
+  // Set I2C maximum packet size
+  void setMaxPacketSize(uint8_t newSize) { wireMaxPacketSize = newSize; }
 };
 
 #endif

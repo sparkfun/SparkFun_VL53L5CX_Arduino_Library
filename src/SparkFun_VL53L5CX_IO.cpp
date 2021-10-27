@@ -7,7 +7,7 @@
 
   Written by Ricardo Ramos  @ SparkFun Electronics, October 22nd, 2021
   This file implements the VL53L5CX I2C driver class.
-  
+
   This library uses ST's VL53L5CX driver and parts of Simon Levy's VL53L5CX
   Arduino library available at https://github.com/simondlevy/VL53L5/tree/main/src/st
 
@@ -37,88 +37,74 @@ bool SparkFun_VL53L5CX_IO::isConnected()
     return (true);
 }
 
-uint8_t SparkFun_VL53L5CX_IO::writeMultipleBytes(uint16_t registerAddress, uint8_t *buffer, uint32_t packetLength)
+// Must be able to write 32,768 bytes at a time
+uint8_t SparkFun_VL53L5CX_IO::writeMultipleBytes(uint16_t registerAddress, uint8_t *buffer, uint16_t bufferSize)
 {
-    // This function was partially based on Simon Levy's VL53L5 library available at
-    // https://github.com/simondlevy/VL53L5
-
-    _i2cPort->beginTransmission(_address);
-    _i2cPort->write(highByte(registerAddress));
-    _i2cPort->write(lowByte(registerAddress));
-
-    uint16_t updatedAddress = 0;
-
-    for (uint32_t i = 0; i < packetLength; i++)
+    // Chunk I2C transactions into limit of 32 bytes (or wireMaxPacketSize)
+    uint8_t i2cError = 0;
+    uint32_t startSpot = 0;
+    uint32_t bytesToSend = bufferSize;
+    while (bytesToSend > 0)
     {
-        if ((i > 0) && (i < packetLength - 1) && (i % wireMaxPacketSize == 0))
-        {
-            _i2cPort->endTransmission(false);
-            updatedAddress = registerAddress + i;
-            _i2cPort->beginTransmission(_address);
-            _i2cPort->write(highByte(updatedAddress));
-            _i2cPort->write(lowByte(updatedAddress));
-        }
+        uint32_t len = bytesToSend;
+        if (len > (wireMaxPacketSize - 2)) // Allow 2 byte for register address
+            len = (wireMaxPacketSize - 2);
 
-        _i2cPort->write(buffer[i]);
-    }
-    return _i2cPort->endTransmission(true);
-}
-
-uint8_t SparkFun_VL53L5CX_IO::readMultipleBytes(uint16_t registerAddress, uint8_t *buffer, uint32_t packetLength)
-{
-    // This function was based on Simon Levy's VL53L5 library available at
-    // https://github.com/simondlevy/VL53L5
-
-    uint8_t status = 0;
-
-    // Loop until the port is transmitted correctly
-    do
-    {
-        _i2cPort->beginTransmission(_address);
+        _i2cPort->beginTransmission((uint8_t)_address);
         _i2cPort->write(highByte(registerAddress));
         _i2cPort->write(lowByte(registerAddress));
 
-        status = _i2cPort->endTransmission(false);
+        // TODO write a subsection of the buffer rather than byte wise
+        for (uint16_t x = 0; x < len; x++)
+            _i2cPort->write(buffer[startSpot + x]); // Write a portion of the payload to the bus
 
-        // Fix for some STM32 boards
-        // Reinitialize the i2c bus with the default parameters
-        // #ifdef ARDUINO_ARCH_STM32
-        // if (status)
-        // {
-        //     _i2cPort->end();
-        //     _i2cPort->begin();
-        // }
-        // #endif
-        // End of fix
+        i2cError = _i2cPort->endTransmission(); // Release bus because we are writing the address each time
+        if (i2cError != 0)
+            return (i2cError); // Sensor did not ACK
 
-    } while (status != 0);
-
-    uint32_t i = 0;
-    if (packetLength > 32)
-    {
-        while (i < packetLength)
-        {
-            // If still more than wireMaxPacketSize bytes to go, wireMaxPacketSize, else the remaining number of bytes
-            uint8_t current_read_size = (packetLength - i > wireMaxPacketSize ? wireMaxPacketSize : packetLength - i);
-            _i2cPort->requestFrom(_address, current_read_size);
-            while (_i2cPort->available())
-            {
-                buffer[i] = _i2cPort->read();
-                i++;
-            }
-        }
+        startSpot += len; // Move the pointer forward
+        bytesToSend -= len;
+        registerAddress += len; // Move register address forward
     }
-    else
+    return (i2cError);
+}
+
+uint8_t SparkFun_VL53L5CX_IO::readMultipleBytes(uint16_t registerAddress, uint8_t *buffer, uint16_t bufferSize)
+{
+    uint8_t i2cError = 0;
+
+    //Write address to read from
+    _i2cPort->beginTransmission(_address);
+    _i2cPort->write(highByte(registerAddress));
+    _i2cPort->write(lowByte(registerAddress));
+    i2cError = _i2cPort->endTransmission(false); //Do not release bus
+    if (i2cError != 0)
+        return (i2cError);
+
+    //Read bytes up to max transaction size
+    uint16_t bytesToReadRemaining = bufferSize;
+    uint16_t offset = 0;
+    while (bytesToReadRemaining > 0)
     {
-        _i2cPort->requestFrom(_address, packetLength);
-        while (_i2cPort->available())
+        //Limit to 32 bytes or whatever the buffer limit is for given platform
+        uint16_t bytesToRead = bytesToReadRemaining;
+        if (bytesToRead > wireMaxPacketSize)
+            bytesToRead = wireMaxPacketSize;
+
+        _i2cPort->requestFrom((uint8_t)_address, (uint8_t)bytesToRead);
+        if (_i2cPort->available())
         {
-            buffer[i] = _i2cPort->read();
-            i++;
+            for (uint16_t x = 0; x < bytesToRead; x++)
+                buffer[offset + x] = _i2cPort->read();
         }
+        else
+            return (false); //Sensor did not respond
+
+        offset += bytesToRead;
+        bytesToReadRemaining -= bytesToRead;
     }
 
-    return i != packetLength;
+    return (0); //Success
 }
 
 uint8_t SparkFun_VL53L5CX_IO::readSingleByte(uint16_t registerAddress)
