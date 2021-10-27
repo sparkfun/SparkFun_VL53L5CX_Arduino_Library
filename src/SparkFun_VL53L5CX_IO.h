@@ -48,6 +48,9 @@ public:
   // Return true if we get a reply from the I2C device.
   bool isConnected();
 
+  // Update driver's I2C address
+  void setAddress(uint8_t newAddress);
+
   // Read a single byte from a register.
   uint8_t readSingleByte(uint16_t registerAddress);
 

@@ -107,11 +107,17 @@ bool SparkFun_VL53L5CX::setAddress(uint8_t newAddress)
 {
     clearErrorStruct();
 
-    uint8_t result = vl53l5cx_set_i2c_address(&Dev, static_cast<uint16_t>(newAddress));
+    // Don't use core vl53l5cx_set_i2c_address() as it calls WrByte with new address that SparkFun driver is not yet aware of
+    // uint8_t result = vl53l5cx_set_i2c_address(&Dev, static_cast<uint16_t>(newAddress));
+
+    uint8_t result = VL53L5CX_i2c.writeSingleByte(0x7fff, 0x00);
+    result |= VL53L5CX_i2c.writeSingleByte(0x4, newAddress);
 
     if (result == 0)
     {
-        address = newAddress;
+        VL53L5CX_i2c.setAddress(newAddress); // Update driver's knowledg of address
+
+        result |= VL53L5CX_i2c.writeSingleByte(0x7fff, 0x02);
         return true;
     }
 

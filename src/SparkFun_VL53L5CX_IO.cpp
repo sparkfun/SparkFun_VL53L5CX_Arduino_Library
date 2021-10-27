@@ -37,6 +37,11 @@ bool SparkFun_VL53L5CX_IO::isConnected()
     return (true);
 }
 
+void SparkFun_VL53L5CX_IO::setAddress(uint8_t newAddress)
+{
+    _address = newAddress;
+}
+
 // Must be able to write 32,768 bytes at a time
 uint8_t SparkFun_VL53L5CX_IO::writeMultipleBytes(uint16_t registerAddress, uint8_t *buffer, uint16_t bufferSize)
 {
@@ -73,20 +78,20 @@ uint8_t SparkFun_VL53L5CX_IO::readMultipleBytes(uint16_t registerAddress, uint8_
 {
     uint8_t i2cError = 0;
 
-    //Write address to read from
+    // Write address to read from
     _i2cPort->beginTransmission(_address);
     _i2cPort->write(highByte(registerAddress));
     _i2cPort->write(lowByte(registerAddress));
-    i2cError = _i2cPort->endTransmission(false); //Do not release bus
+    i2cError = _i2cPort->endTransmission(false); // Do not release bus
     if (i2cError != 0)
         return (i2cError);
 
-    //Read bytes up to max transaction size
+    // Read bytes up to max transaction size
     uint16_t bytesToReadRemaining = bufferSize;
     uint16_t offset = 0;
     while (bytesToReadRemaining > 0)
     {
-        //Limit to 32 bytes or whatever the buffer limit is for given platform
+        // Limit to 32 bytes or whatever the buffer limit is for given platform
         uint16_t bytesToRead = bytesToReadRemaining;
         if (bytesToRead > wireMaxPacketSize)
             bytesToRead = wireMaxPacketSize;
@@ -98,13 +103,13 @@ uint8_t SparkFun_VL53L5CX_IO::readMultipleBytes(uint16_t registerAddress, uint8_
                 buffer[offset + x] = _i2cPort->read();
         }
         else
-            return (false); //Sensor did not respond
+            return (false); // Sensor did not respond
 
         offset += bytesToRead;
         bytesToReadRemaining -= bytesToRead;
     }
 
-    return (0); //Success
+    return (0); // Success
 }
 
 uint8_t SparkFun_VL53L5CX_IO::readSingleByte(uint16_t registerAddress)
