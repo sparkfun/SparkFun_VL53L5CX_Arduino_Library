@@ -101,11 +101,11 @@ public:
     bool isDataReady();
 
     // Returns the current ranging resolution.
-    SF_VL53L5CX_RANGING_RESOLUTION getResolution();
+    uint8_t getResolution();
 
     // Returns true if the sensor's ranging resolution was changed accordingly or false otherwise.
     // If this function returns false an error entry will be stored in the lastError struct.
-    bool setRangingResolution(SF_VL53L5CX_RANGING_RESOLUTION resolution);
+    bool setRangingResolution(uint8_t resolution);
 
     // Returns true if the ranging data was read from the sensor or false otherwise.
     // Data will be stored in the VL53L5CX_ResultsData struct passed as a pointer.

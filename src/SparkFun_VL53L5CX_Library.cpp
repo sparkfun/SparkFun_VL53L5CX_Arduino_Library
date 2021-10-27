@@ -244,7 +244,7 @@ bool SparkFun_VL53L5CX::isDataReady()
     return false;
 }
 
-SF_VL53L5CX_RANGING_RESOLUTION SparkFun_VL53L5CX::getResolution()
+uint8_t SparkFun_VL53L5CX::getResolution()
 {
     clearErrorStruct();
 
@@ -253,28 +253,22 @@ SF_VL53L5CX_RANGING_RESOLUTION SparkFun_VL53L5CX::getResolution()
     if (result == 0)
     {
         if (resolution == 64)
-            return SF_VL53L5CX_RANGING_RESOLUTION::RES_8X8;
+            return (uint8_t)SF_VL53L5CX_RANGING_RESOLUTION::RES_8X8;
         else
-            return SF_VL53L5CX_RANGING_RESOLUTION::RES_4X4;
+            return (uint8_t)SF_VL53L5CX_RANGING_RESOLUTION::RES_4X4;
     }
 
     lastError.lastErrorCode = SF_VL53L5CX_ERROR_TYPE::CANNOT_GET_RESOLUTION;
     lastError.lastErrorValue = static_cast<uint32_t>(result);
     SAFE_CALLBACK(errorCallback, lastError.lastErrorCode, lastError.lastErrorValue);
-    return SF_VL53L5CX_RANGING_RESOLUTION::ERROR;
+    return (uint8_t)SF_VL53L5CX_RANGING_RESOLUTION::ERROR;
 }
 
-bool SparkFun_VL53L5CX::setRangingResolution(SF_VL53L5CX_RANGING_RESOLUTION resolution)
+bool SparkFun_VL53L5CX::setRangingResolution(uint8_t resolution)
 {
     clearErrorStruct();
-    uint8_t resolutionValue = 0;
 
-    if (resolution == SF_VL53L5CX_RANGING_RESOLUTION::RES_8X8)
-        resolutionValue = 64;
-    else
-        resolutionValue = 16;
-
-    uint8_t result = vl53l5cx_set_resolution(&Dev, resolutionValue);
+    uint8_t result = vl53l5cx_set_resolution(&Dev, resolution);
 
     if (result == 0)
         return true;
