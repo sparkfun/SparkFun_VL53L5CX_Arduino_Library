@@ -22,12 +22,12 @@
 #include "SparkFun_VL53L5CX_Library.h"
 #include "vl53l5cx_api.h"
 
-SparkFun_VL53L5CX_IO VL53L5CX_i2c;          // I2C driver object
-VL53L5CX_Configuration Dev;                 // Sensor condfiguration struct
+SparkFun_VL53L5CX_IO VL53L5CX_i2c; // I2C driver object
+VL53L5CX_Configuration Dev;        // Sensor condfiguration struct
 
 void SparkFun_VL53L5CX::clearErrorStruct()
 {
-    // Set last error struct to no-error condition 
+    // Set last error struct to no-error condition
     lastError.lastErrorCode = SF_VL53L5CX_ERROR_TYPE::NO_ERROR;
     lastError.lastErrorValue = 0;
 }
@@ -42,7 +42,7 @@ bool SparkFun_VL53L5CX::begin(byte address, TwoWire &wirePort)
     uint8_t revisionId = 0;
 
     if (!ready)
-    {   
+    {
         SAFE_CALLBACK(errorCallback, SF_VL53L5CX_ERROR_TYPE::I2C_INITIALIZATION_ERROR, UNKNOWN_ERROR_VALUE);
         return false;
     }
@@ -356,7 +356,7 @@ bool SparkFun_VL53L5CX::setIntegrationTime(uint32_t timeMsec)
     clearErrorStruct();
 
     // Does not allow invalid values to be sent to the device
-    if(timeMsec < 2 || timeMsec > 1000)
+    if (timeMsec < 2 || timeMsec > 1000)
     {
         lastError.lastErrorCode = SF_VL53L5CX_ERROR_TYPE::INVALID_INTEGRATION_TIME;
         lastError.lastErrorValue = UNKNOWN_ERROR_VALUE;
@@ -366,7 +366,7 @@ bool SparkFun_VL53L5CX::setIntegrationTime(uint32_t timeMsec)
 
     uint8_t result = vl53l5cx_set_integration_time_ms(&Dev, timeMsec);
 
-    if(result == 0)
+    if (result == 0)
         return true;
 
     lastError.lastErrorCode = SF_VL53L5CX_ERROR_TYPE::CANNOT_SET_INTEGRATION_TIME;
@@ -381,7 +381,7 @@ uint32_t SparkFun_VL53L5CX::getIntegrationTime()
     uint32_t integrationTime;
     uint8_t result = vl53l5cx_get_integration_time_ms(&Dev, &integrationTime);
 
-    if(result == 0)
+    if (result == 0)
     {
         return integrationTime;
     }
@@ -396,7 +396,7 @@ bool SparkFun_VL53L5CX::setSharpenerPercent(uint8_t percent)
 {
     clearErrorStruct();
 
-    if(percent > 99)
+    if (percent > 99)
     {
         lastError.lastErrorCode = SF_VL53L5CX_ERROR_TYPE::INVALID_SHARPENER_VALUE;
         lastError.lastErrorValue = UNKNOWN_ERROR_VALUE;
@@ -405,7 +405,7 @@ bool SparkFun_VL53L5CX::setSharpenerPercent(uint8_t percent)
 
     uint8_t result = vl53l5cx_set_sharpener_percent(&Dev, percent);
 
-    if(result == 0)
+    if (result == 0)
         return true;
 
     lastError.lastErrorCode = SF_VL53L5CX_ERROR_TYPE::CANNOT_SET_SHARPENER_VALUE;
@@ -435,14 +435,14 @@ bool SparkFun_VL53L5CX::setTargetOrder(SF_VL53L5CX_TARGET_ORDER order)
     clearErrorStruct();
 
     uint8_t orderValue;
-    if(order == SF_VL53L5CX_TARGET_ORDER::CLOSEST)
+    if (order == SF_VL53L5CX_TARGET_ORDER::CLOSEST)
         orderValue = VL53L5CX_TARGET_ORDER_CLOSEST;
     else
         orderValue = VL53L5CX_TARGET_ORDER_STRONGEST;
 
     uint8_t result = vl53l5cx_set_target_order(&Dev, orderValue);
 
-    if(result == 0)
+    if (result == 0)
         return true;
 
     lastError.lastErrorCode = SF_VL53L5CX_ERROR_TYPE::CANNOT_SET_TARGET_ORDER;
@@ -458,7 +458,7 @@ SF_VL53L5CX_TARGET_ORDER SparkFun_VL53L5CX::getTargetOrder()
     uint8_t orderValue;
     uint8_t result = vl53l5cx_get_target_order(&Dev, &orderValue);
 
-    if(result == 0)
+    if (result == 0)
     {
         if (orderValue == VL53L5CX_TARGET_ORDER_CLOSEST)
             return SF_VL53L5CX_TARGET_ORDER::CLOSEST;
@@ -477,7 +477,7 @@ uint8_t SparkFun_VL53L5CX::getWireMaxPacketSize()
     return VL53L5CX_i2c.getMaxPacketSize();
 }
 
-void SparkFun_VL53L5CX::getWireMaxPacketSize(uint8_t newSize)
+void SparkFun_VL53L5CX::setWireMaxPacketSize(uint8_t newSize)
 {
     VL53L5CX_i2c.setMaxPacketSize(newSize);
 }

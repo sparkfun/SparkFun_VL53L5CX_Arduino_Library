@@ -30,7 +30,7 @@
 #include "vl53l5cx_api.h"
 
 struct SparkFun_VL53L5CX_Error
-{   
+{
     // More descriptive error than a single uint32 value.
     SF_VL53L5CX_ERROR_TYPE lastErrorCode = SF_VL53L5CX_ERROR_TYPE::NO_ERROR;
 
@@ -59,15 +59,15 @@ public:
     SparkFun_VL53L5CX(){};
 
     // Start up the sensor. Passing an address and Wire port instance is optional.
-    bool begin(byte address = (DEFAULT_I2C_ADDR>>1), TwoWire &wirePort = Wire);
+    bool begin(byte address = (DEFAULT_I2C_ADDR >> 1), TwoWire &wirePort = Wire);
 
-    // Set the error callback function. 
+    // Set the error callback function.
     void setErrorCallback(void (*errorCallback)(SF_VL53L5CX_ERROR_TYPE errorCode, uint32_t errorValue));
 
     // Returns true if the sensor is connected and replying the correct device ID and revision ID.
     bool isConnected();
 
-    // Returns true if the sensor's address was correctly changed or false otherwise. 
+    // Returns true if the sensor's address was correctly changed or false otherwise.
     // If this function returns false an error entry will be stored in the lastError struct.
     bool setAddress(uint8_t newAddress);
 
@@ -110,7 +110,7 @@ public:
     // Returns true if the ranging data was read from the sensor or false otherwise.
     // Data will be stored in the VL53L5CX_ResultsData struct passed as a pointer.
     // If this function returns false an error entry will be stored in the lastError struct.
-    bool getRangingData(VL53L5CX_ResultsData* pRangingData);
+    bool getRangingData(VL53L5CX_ResultsData *pRangingData);
 
     // Returns true if the sensor's power mode was changed accordingly or false otherwise.
     // If this function returns false an error entry will be stored in the lastError struct.
@@ -136,7 +136,7 @@ public:
     // If this function returns 0xff an error entry will be stored in the lastError struct.
     uint8_t getSharpenerPercent();
 
-    // Returns true if the target order was set or false otherwise.    
+    // Returns true if the target order was set or false otherwise.
     // If this function returns false an error entry will be stored in the lastError struct.
     bool setTargetOrder(SF_VL53L5CX_TARGET_ORDER order);
 
@@ -148,6 +148,6 @@ public:
     uint8_t getWireMaxPacketSize();
 
     // Sets I2C maximum packet size.
-    void getWireMaxPacketSize(uint8_t newSize = I2C_BUFFER_SIZE);
+    void setWireMaxPacketSize(uint8_t newSize = I2C_BUFFER_SIZE);
 };
 #endif
