@@ -1,4 +1,4 @@
-SparkFun Qwiic Time-of-Flight Sensor VL53L5CX
+SparkFun Qwiic Time-of-Flight Sensor VL53L5CX Arduino Library
 =============================================
 
 ![SparkFun Time-of-Flight Sensor VL53L5CX](https://cdn.sparkfun.com/assets/parts/1/8/1/6/9/18642-SparkFun_Qwiic_ToF_Imager_-_VL53L5CX-01.jpg)
