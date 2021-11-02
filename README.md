@@ -20,9 +20,10 @@ Repository Contents
 * **keywords.txt** - Keywords from this library that will be highlighted in the Arduino IDE. 
 * **library.properties** - General library properties for the Arduino package manager. 
 
-Library
+Documentation
 --------------
-* **[Arduino Library](https://github.com/sparkfun/SparkFun_VL53L5CX_Arduino_Library)** - Library for performing measurements and optional device configuration.
+* **[Hardware Repo](https://github.com/sparkfun/SparkFun_Qwiic_ToF_Imager_VL53L5CX)** - Hardware Repository for the Qwiic ToF Imager VL53L5CX
+* **[Hookup Guide](https://learn.sparkfun.com/tutorials/qwiic-tof-imager---vl53l5cx-hookup-guide)** - Hookup guide for the Qwiic ToF Imager VL53L5CX
 
 License Information
 -------------------
