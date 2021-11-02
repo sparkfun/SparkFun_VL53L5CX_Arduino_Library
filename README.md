@@ -5,11 +5,11 @@ SparkFun Qwiic Time-of-Flight Sensor VL53L5CX Arduino Library
 
 [*SparkFun Time-of-Flight 8x8 multizone ranging sensor with wide field of view*](https://www.sparkfun.com/products/18642)
 
-The VL53L5CX is a state of the art, Time-of-Flight (ToF), multizone ranging sensor enhancing the ST FlightSense product family. Housed in a miniature reflowable package, it integrates a SPAD array, physical infrared filters, and diffractive optical elements (DOE) to achieve the best ranging performance in various ambient lighting conditions with a range of cover glass materials.
+The Qwiic ToF Imager - VL53L5CX is here! This little breakout board is built around ST Electronics' VL53L5CX; a state of the art, Time-of-Flight (ToF), multizone ranging sensor enhancing the ST FlightSense product family. This chip integrates a SPAD array, physical infrared filters, and diffractive optical elements (DOE) to achieve the best ranging performance in various ambient lighting conditions with a range of cover glass materials.
 
-The use of a DOE above the vertical cavity surface emitting laser (VCSEL) allows a square FoV to be projected onto the scene. The reflection of this light is focused by the receiver lens onto a SPAD array. Unlike conventional IR sensors, the VL53L5CX uses ST's latest generation, direct ToF technology which allows absolute distance measurement whatever the target color and reflectance. It provides accurate ranging up to 400 cm and can work at fast speeds (60 Hz), which makes it the fastest, multizone, miniature ToF sensor on the market.
+Multizone distance measurements are possible up to 8x8 zones with a wide 63° diagonal FoV which can be reduced by software. Thanks to ST Histogram patented algorithms, the VL53L5CX is able to detect different objects within the FoV. The Histogram also provides immunity to cover glass crosstalk beyond 60 cm.
 
-Multizone distance measurements are possible up to 8x8 zones with a wide 63° diagonal FoV which can be reduced by software Thanks to ST Histogram patented algorithms, the VL53L5CX is able to detect different objects within the FoV. The Histogram also provides immunity to cover glass crosstalk beyond 60 cm.
+Ideal for 3D room mapping, obstacle detection for robotics, gesture recognition, IoT, laser-assisted autofocus, and AR/VR enhancement, the Qwiic connector on this sensor makes integration easy. 
 
 Repository Contents
 -------------------
