@@ -5,7 +5,7 @@ SparkFun Qwiic Time-of-Flight Sensor VL53L5CX Arduino Library
 
 [*SparkFun Time-of-Flight 8x8 multizone ranging sensor with wide field of view*](https://www.sparkfun.com/products/18642)
 
-The Qwiic ToF Imager - VL53L5CX is here! This little breakout board is built around ST Electronics' VL53L5CX; a state of the art, Time-of-Flight (ToF), multizone ranging sensor enhancing the ST FlightSense product family. This chip integrates a SPAD array, physical infrared filters, and diffractive optical elements (DOE) to achieve the best ranging performance in various ambient lighting conditions with a range of cover glass materials.
+The SparkFun Qwiic ToF Imager is built around VL53L5CX from ST Electronics; a state of the art, Time-of-Flight (ToF), multizone ranging sensor enhancing the ST FlightSense product family. This chip integrates a SPAD array, physical infrared filters, and diffractive optical elements (DOE) to achieve the best ranging performance in various ambient lighting conditions with a range of cover glass materials. Utilizing our handy Qwiic system, no soldering is required to connect it to the rest of your system. However, we still have broken out 0.1"-spaced pins in case you prefer to use a breadboard.
 
 Multizone distance measurements are possible up to 8x8 zones with a wide 63° diagonal FoV which can be reduced by software. Thanks to ST Histogram patented algorithms, the VL53L5CX is able to detect different objects within the FoV. The Histogram also provides immunity to cover glass crosstalk beyond 60 cm.
 
