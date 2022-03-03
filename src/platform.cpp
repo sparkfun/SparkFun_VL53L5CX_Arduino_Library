@@ -65,27 +65,25 @@
 #include "SparkFun_VL53L5CX_IO.h"
 #include "platform.h"
 
-extern SparkFun_VL53L5CX_IO* VL53L5CX_i2c;
-
 uint8_t RdByte(VL53L5CX_Platform *p_platform, uint16_t RegisterAdress, uint8_t *p_value)
 {
-	*p_value = VL53L5CX_i2c->readSingleByte(RegisterAdress);
+	*p_value = p_platform->VL53L5CX_i2c->readSingleByte(RegisterAdress);
 	return 0;
 }
 
 uint8_t WrByte(VL53L5CX_Platform *p_platform, uint16_t RegisterAdress, uint8_t value)
 {
-	return VL53L5CX_i2c->writeSingleByte(RegisterAdress, value);
+	return p_platform->VL53L5CX_i2c->writeSingleByte(RegisterAdress, value);
 }
 
 uint8_t WrMulti(VL53L5CX_Platform *p_platform, uint16_t RegisterAdress, uint8_t *p_values, uint32_t size)
 {
-	return VL53L5CX_i2c->writeMultipleBytes(RegisterAdress, p_values, size);
+	return p_platform->VL53L5CX_i2c->writeMultipleBytes(RegisterAdress, p_values, size);
 }
 
 uint8_t RdMulti(VL53L5CX_Platform *p_platform, uint16_t RegisterAdress, uint8_t *p_values, uint32_t size)
 {
-	return VL53L5CX_i2c->readMultipleBytes(RegisterAdress, p_values, size);
+	return p_platform->VL53L5CX_i2c->readMultipleBytes(RegisterAdress, p_values, size);
 }
 
 void SwapBuffer(uint8_t *buffer, uint16_t size)

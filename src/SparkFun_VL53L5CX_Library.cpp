@@ -37,6 +37,8 @@ bool SparkFun_VL53L5CX::begin(byte address, TwoWire &wirePort)
     VL53L5CX_i2c = new SparkFun_VL53L5CX_IO();
     Dev = new VL53L5CX_Configuration();
 
+    Dev->platform.VL53L5CX_i2c = VL53L5CX_i2c;
+
     bool ready = VL53L5CX_i2c->begin(address, wirePort);
     uint8_t result = 0;
     uint8_t deviceId = 0;
