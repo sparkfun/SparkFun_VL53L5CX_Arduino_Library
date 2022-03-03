@@ -20,10 +20,8 @@
 */
 
 #include "SparkFun_VL53L5CX_Library.h"
+#include "SparkFun_VL53L5CX_IO.h"
 #include "vl53l5cx_api.h"
-
-SparkFun_VL53L5CX_IO VL53L5CX_i2c; // I2C driver object
-VL53L5CX_Configuration Dev;        // Sensor condfiguration struct
 
 void SparkFun_VL53L5CX::clearErrorStruct()
 {
@@ -36,7 +34,10 @@ bool SparkFun_VL53L5CX::begin(byte address, TwoWire &wirePort)
 {
     clearErrorStruct();
 
-    bool ready = VL53L5CX_i2c.begin(address, wirePort);
+    VL53L5CX_i2c = new SparkFun_VL53L5CX_IO();
+    Dev = new VL53L5CX_Configuration();
+
+    bool ready = VL53L5CX_i2c->begin(address, wirePort);
     uint8_t result = 0;
     uint8_t deviceId = 0;
     uint8_t revisionId = 0;
@@ -47,10 +48,10 @@ bool SparkFun_VL53L5CX::begin(byte address, TwoWire &wirePort)
         return false;
     }
 
-    VL53L5CX_i2c.writeSingleByte(0x7fff, 0x00);
-    deviceId = VL53L5CX_i2c.readSingleByte(0x00);
-    revisionId = VL53L5CX_i2c.readSingleByte(0x01);
-    VL53L5CX_i2c.writeSingleByte(0x7fff, 0x02);
+    VL53L5CX_i2c->writeSingleByte(0x7fff, 0x00);
+    deviceId = VL53L5CX_i2c->readSingleByte(0x00);
+    revisionId = VL53L5CX_i2c->readSingleByte(0x01);
+    VL53L5CX_i2c->writeSingleByte(0x7fff, 0x02);
 
     if ((revisionId != REVISION_ID) && (deviceId != DEVICE_ID))
     {
@@ -60,7 +61,7 @@ bool SparkFun_VL53L5CX::begin(byte address, TwoWire &wirePort)
         return false;
     }
 
-    result = vl53l5cx_init(&Dev);
+    result = vl53l5cx_init(Dev);
 
     if (result == 0)
         return true;
@@ -82,7 +83,7 @@ bool SparkFun_VL53L5CX::isConnected()
 
     uint8_t result = 0;
 
-    bool connected = VL53L5CX_i2c.isConnected();
+    bool connected = VL53L5CX_i2c->isConnected();
 
     if (!connected)
     {
@@ -91,7 +92,7 @@ bool SparkFun_VL53L5CX::isConnected()
     }
 
     uint8_t alive = 0;
-    result = vl53l5cx_is_alive(&Dev, &alive);
+    result = vl53l5cx_is_alive(Dev, &alive);
     if (result != 0)
     {
         SAFE_CALLBACK(errorCallback, SF_VL53L5CX_ERROR_TYPE::DEVICE_NOT_ALIVE, result);
@@ -108,17 +109,19 @@ bool SparkFun_VL53L5CX::setAddress(uint8_t newAddress)
     clearErrorStruct();
 
     // Don't use core vl53l5cx_set_i2c_address() as it calls WrByte with new address that SparkFun driver is not yet aware of
-    // uint8_t result = vl53l5cx_set_i2c_address(&Dev, static_cast<uint16_t>(newAddress));
+    //uint8_t result = vl53l5cx_set_i2c_address(Dev, static_cast<uint16_t>(newAddress));
 
-    uint8_t result = VL53L5CX_i2c.writeSingleByte(0x7fff, 0x00);
-    result |= VL53L5CX_i2c.writeSingleByte(0x4, newAddress);
+    uint8_t result = VL53L5CX_i2c->writeSingleByte(0x7fff, 0x00);
+    result |= VL53L5CX_i2c->writeSingleByte(0x4, newAddress);
 
     if (result == 0)
     {
-        VL53L5CX_i2c.setAddress(newAddress); // Update driver's knowledg of address
-        address = newAddress;
-
-        result |= VL53L5CX_i2c.writeSingleByte(0x7fff, 0x02);
+        VL53L5CX_i2c->setAddress(newAddress); //Tell the middle layer what our new address is
+        address = newAddress; //Tell Arduino lib what our new address is
+        vl53l5cx_set_i2c_address(Dev, static_cast<uint16_t>(newAddress)); //Tell the core what our new address is
+        
+        result |= VL53L5CX_i2c->writeSingleByte(0x7fff, 0x02); //Do last write with new address
+        
         return true;
     }
 
@@ -137,7 +140,7 @@ bool SparkFun_VL53L5CX::setRangingFrequency(uint8_t newFrequency)
 {
     clearErrorStruct();
 
-    uint8_t result = vl53l5cx_set_ranging_frequency_hz(&Dev, newFrequency);
+    uint8_t result = vl53l5cx_set_ranging_frequency_hz(Dev, newFrequency);
     if (result == 0)
         return true;
 
@@ -152,7 +155,7 @@ uint8_t SparkFun_VL53L5CX::getRangingFrequency()
     clearErrorStruct();
 
     uint8_t frequency = 0;
-    uint8_t result = vl53l5cx_get_ranging_frequency_hz(&Dev, &frequency);
+    uint8_t result = vl53l5cx_get_ranging_frequency_hz(Dev, &frequency);
     if (result == 0)
     {
         return frequency;
@@ -173,9 +176,9 @@ bool SparkFun_VL53L5CX::setRangingMode(SF_VL53L5CX_RANGING_MODE rangingMode)
     uint8_t result;
 
     if (rangingMode == SF_VL53L5CX_RANGING_MODE::AUTONOMOUS)
-        result = vl53l5cx_set_ranging_mode(&Dev, VL53L5CX_RANGING_MODE_AUTONOMOUS);
+        result = vl53l5cx_set_ranging_mode(Dev, VL53L5CX_RANGING_MODE_AUTONOMOUS);
     else
-        result = vl53l5cx_set_ranging_mode(&Dev, VL53L5CX_RANGING_MODE_CONTINUOUS);
+        result = vl53l5cx_set_ranging_mode(Dev, VL53L5CX_RANGING_MODE_CONTINUOUS);
 
     if (result == 0)
         return true;
@@ -191,7 +194,7 @@ SF_VL53L5CX_RANGING_MODE SparkFun_VL53L5CX::getRangingMode()
     clearErrorStruct();
 
     uint8_t rangeMode = 0;
-    uint8_t result = vl53l5cx_get_ranging_mode(&Dev, &rangeMode);
+    uint8_t result = vl53l5cx_get_ranging_mode(Dev, &rangeMode);
     if (result == 0)
     {
         if (rangeMode == 0x01)
@@ -210,7 +213,7 @@ bool SparkFun_VL53L5CX::startRanging()
 {
     clearErrorStruct();
 
-    uint8_t result = vl53l5cx_start_ranging(&Dev);
+    uint8_t result = vl53l5cx_start_ranging(Dev);
 
     if (result == 0)
         return true;
@@ -225,7 +228,7 @@ bool SparkFun_VL53L5CX::stopRanging()
 {
     clearErrorStruct();
 
-    uint8_t result = vl53l5cx_stop_ranging(&Dev);
+    uint8_t result = vl53l5cx_stop_ranging(Dev);
 
     if (result == 0)
         return true;
@@ -241,7 +244,7 @@ bool SparkFun_VL53L5CX::isDataReady()
     clearErrorStruct();
     uint8_t dataReady = 0;
 
-    uint8_t result = vl53l5cx_check_data_ready(&Dev, &dataReady);
+    uint8_t result = vl53l5cx_check_data_ready(Dev, &dataReady);
     if (result == 0)
         return dataReady != 0;
 
@@ -256,7 +259,7 @@ uint8_t SparkFun_VL53L5CX::getResolution()
     clearErrorStruct();
 
     uint8_t resolution = 0;
-    uint8_t result = vl53l5cx_get_resolution(&Dev, &resolution);
+    uint8_t result = vl53l5cx_get_resolution(Dev, &resolution);
     if (result == 0)
     {
         if (resolution == 64)
@@ -275,7 +278,7 @@ bool SparkFun_VL53L5CX::setResolution(uint8_t resolution)
 {
     clearErrorStruct();
 
-    uint8_t result = vl53l5cx_set_resolution(&Dev, resolution);
+    uint8_t result = vl53l5cx_set_resolution(Dev, resolution);
 
     if (result == 0)
         return true;
@@ -290,7 +293,7 @@ bool SparkFun_VL53L5CX::getRangingData(VL53L5CX_ResultsData *pRangingData)
 {
     clearErrorStruct();
 
-    uint8_t result = vl53l5cx_get_ranging_data(&Dev, pRangingData);
+    uint8_t result = vl53l5cx_get_ranging_data(Dev, pRangingData);
     if (result == 0)
         return true;
 
@@ -310,7 +313,7 @@ bool SparkFun_VL53L5CX::setPowerMode(SF_VL53L5CX_POWER_MODE powerMode)
     else
         powerModeValue = VL53L5CX_POWER_MODE_WAKEUP;
 
-    uint8_t result = vl53l5cx_set_power_mode(&Dev, powerModeValue);
+    uint8_t result = vl53l5cx_set_power_mode(Dev, powerModeValue);
 
     if (result == 0)
         return true;
@@ -326,7 +329,7 @@ SF_VL53L5CX_POWER_MODE SparkFun_VL53L5CX::getPowerMode()
     clearErrorStruct();
 
     uint8_t powerModeValue;
-    uint8_t result = vl53l5cx_get_power_mode(&Dev, &powerModeValue);
+    uint8_t result = vl53l5cx_get_power_mode(Dev, &powerModeValue);
 
     if (result == 0)
     {
@@ -365,7 +368,7 @@ bool SparkFun_VL53L5CX::setIntegrationTime(uint32_t timeMsec)
         return false;
     }
 
-    uint8_t result = vl53l5cx_set_integration_time_ms(&Dev, timeMsec);
+    uint8_t result = vl53l5cx_set_integration_time_ms(Dev, timeMsec);
 
     if (result == 0)
         return true;
@@ -380,7 +383,7 @@ uint32_t SparkFun_VL53L5CX::getIntegrationTime()
 {
     clearErrorStruct();
     uint32_t integrationTime;
-    uint8_t result = vl53l5cx_get_integration_time_ms(&Dev, &integrationTime);
+    uint8_t result = vl53l5cx_get_integration_time_ms(Dev, &integrationTime);
 
     if (result == 0)
     {
@@ -404,7 +407,7 @@ bool SparkFun_VL53L5CX::setSharpenerPercent(uint8_t percent)
         SAFE_CALLBACK(errorCallback, lastError.lastErrorCode, lastError.lastErrorValue);
     }
 
-    uint8_t result = vl53l5cx_set_sharpener_percent(&Dev, percent);
+    uint8_t result = vl53l5cx_set_sharpener_percent(Dev, percent);
 
     if (result == 0)
         return true;
@@ -420,7 +423,7 @@ uint8_t SparkFun_VL53L5CX::getSharpenerPercent()
     clearErrorStruct();
 
     uint8_t percent;
-    uint8_t result = vl53l5cx_get_sharpener_percent(&Dev, &percent);
+    uint8_t result = vl53l5cx_get_sharpener_percent(Dev, &percent);
 
     if (result == 0)
         return percent;
@@ -441,7 +444,7 @@ bool SparkFun_VL53L5CX::setTargetOrder(SF_VL53L5CX_TARGET_ORDER order)
     else
         orderValue = VL53L5CX_TARGET_ORDER_STRONGEST;
 
-    uint8_t result = vl53l5cx_set_target_order(&Dev, orderValue);
+    uint8_t result = vl53l5cx_set_target_order(Dev, orderValue);
 
     if (result == 0)
         return true;
@@ -457,7 +460,7 @@ SF_VL53L5CX_TARGET_ORDER SparkFun_VL53L5CX::getTargetOrder()
     clearErrorStruct();
 
     uint8_t orderValue;
-    uint8_t result = vl53l5cx_get_target_order(&Dev, &orderValue);
+    uint8_t result = vl53l5cx_get_target_order(Dev, &orderValue);
 
     if (result == 0)
     {
@@ -475,10 +478,10 @@ SF_VL53L5CX_TARGET_ORDER SparkFun_VL53L5CX::getTargetOrder()
 
 uint8_t SparkFun_VL53L5CX::getWireMaxPacketSize()
 {
-    return VL53L5CX_i2c.getMaxPacketSize();
+    return VL53L5CX_i2c->getMaxPacketSize();
 }
 
 void SparkFun_VL53L5CX::setWireMaxPacketSize(uint8_t newSize)
 {
-    VL53L5CX_i2c.setMaxPacketSize(newSize);
+    VL53L5CX_i2c->setMaxPacketSize(newSize);
 }
