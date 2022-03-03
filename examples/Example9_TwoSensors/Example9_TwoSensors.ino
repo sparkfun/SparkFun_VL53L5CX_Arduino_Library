@@ -43,7 +43,7 @@ void setup()
   Wire.setClock(400000); //Sensor has max I2C freq of 400kHz
 
   pinMode(sensorReset2, OUTPUT);
-  digitalWrite(sensorReset2, LOW); //Hold sensor 2 in reset
+  digitalWrite(sensorReset2, HIGH); //Hold sensor 2 in reset
 
   Serial.println(F("Initializing sensor 1. This can take up to 10s. Please wait."));
   if (myImager1.begin() == false)
@@ -66,7 +66,7 @@ void setup()
   Serial.print(F("New address of sensor 1 is: 0x"));
   Serial.println(newAddress, HEX);
 
-  digitalWrite(sensorReset2, HIGH); //Release sensor from reset
+  digitalWrite(sensorReset2, LOW); //Release sensor from reset
 
   Serial.println(F("Initializing sensor 2. This can take up to 10s. Please wait."));
   if (myImager2.begin() == false)
