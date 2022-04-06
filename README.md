@@ -15,8 +15,8 @@ SparkFun Qwiic Time-of-Flight Sensor VL53L5CX Arduino Library
         <td><a href="https://www.sparkfun.com/products/19013"><img src="https://cdn.sparkfun.com/assets/parts/1/8/6/1/2/19013-SparkFun_Qwiic_Mini_ToF_Imager_-_VL53L5CX-01.jpg" alt=""></a></td>
     </tr>
     <tr align="center">
-        <td>SparkFun Qwiic ToF Imager - VL53L5CX (SEN-18642)</td>
-        <td>SparkFun Qwiic Mini ToF Imager - VL53L5CX (SEN-19013)</td>
+        <td><a href="https://www.sparkfun.com/products/18642">SparkFun Qwiic ToF Imager - VL53L5CX (SEN-18642)</td>
+        <td><a href="https://www.sparkfun.com/products/19013">SparkFun Qwiic Mini ToF Imager - VL53L5CX (SEN-19013)</td>
     </tr>
 </table>
 
