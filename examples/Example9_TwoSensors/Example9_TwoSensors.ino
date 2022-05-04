@@ -42,7 +42,7 @@ void setup()
   Serial.println("SparkFun VL53L5CX Imager Example");
 
   Wire.begin(); //This resets I2C bus to 100kHz
-  Wire.setClock(400000); //Sensor has max I2C freq of 400kHz
+  Wire.setClock(1000000); //Sensor has max I2C freq of 1MHz
 
   pinMode(sensorReset2, OUTPUT);
   digitalWrite(sensorReset2, HIGH); //Hold sensor 2 in reset while we configure sensor 1
@@ -118,7 +118,7 @@ void loop()
       Serial.println();
     }
   }
-  
+
   if (myImager2.isDataReady() == true)
   {
     if (myImager2.getRangingData(&measurementData2)) //Read distance data into array

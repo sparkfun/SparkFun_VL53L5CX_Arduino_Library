@@ -33,8 +33,7 @@ void setup()
   Serial.println("SparkFun VL53L5CX Imager Example");
 
   Wire.begin(); // This resets I2C bus to 100kHz
-  // Wire.setClock(400000); //Sensor has max I2C freq of 400kHz
-  Wire.setClock(1000000); // Run sensor out of spec
+  Wire.setClock(1000000); //Sensor has max I2C freq of 1MHz
 
   myImager.setWireMaxPacketSize(128); // Increase default from 32 bytes to 128 - not supported on all platforms
 

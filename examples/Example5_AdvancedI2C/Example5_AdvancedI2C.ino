@@ -31,7 +31,7 @@ void setup()
 
   //Note: The following line will fail to compile if your platform does not have multiple Wire ports
   Wire1.begin(33, 32); //(SDA, SCL) on ESP32. This resets I2C bus to 100kHz
-  Wire1.setClock(400000); //Sensor has max I2C freq of 400kHz
+  Wire1.setClock(1000000); //Sensor has max I2C freq of 1MHz
 
   Serial.println("Initializing sensor board at address 0x3C on Wire port Wire1. This can take up to 10s. Please wait.");
 
