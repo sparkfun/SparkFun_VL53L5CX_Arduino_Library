@@ -14,16 +14,23 @@ jobs:
 
       matrix:
         board:
-          # Uno
-          # https://github.com/arduino/ArduinoCore-avr/blob/master/boards.txt
-          - fqbn: arduino:avr:uno
-            platforms: |
-              - name: arduino:avr
-                source-url: https://downloads.arduino.cc/packages/package_index.json
-
           # ESP32
           # https://github.com/espressif/arduino-esp32/blob/master/boards.txt
           - fqbn: esp32:esp32:esp32
+            platforms: |
+              - name: esp32:esp32
+                source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+
+          # ESP32-S2
+          # https://github.com/espressif/arduino-esp32/blob/master/boards.txt
+          - fqbn: esp32:esp32:esp32s2
+            platforms: |
+              - name: esp32:esp32
+                source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+
+          # ESP32-C3
+          # https://github.com/espressif/arduino-esp32/blob/master/boards.txt
+          - fqbn: esp32:esp32:esp32c3
             platforms: |
               - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
@@ -63,16 +70,12 @@ jobs:
               - name: rp2040:rp2040
                 source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
-          # STM32
-          # https://github.com/arduino/ArduinoCore-mbed/blob/master/boards.txt
-          - fqbn: STMicroelectronics:stm32:GenF1
-            platforms: |
-              - name: STMicroelectronics:stm32
-                source-url: https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Branch name
+        run: echo running on branch ${GITHUB_REF##*/}
 
       - name: Compile Sketch
         uses: arduino/compile-sketches@v1
@@ -80,10 +83,11 @@ jobs:
           platforms: ${{ matrix.board.platforms }}
           fqbn: ${{ matrix.board.fqbn }}
           libraries: |
-            - source-url: https://github.com/${{github.repository}}.git
+            - source-path: ./
           sketch-paths: |
-            - ./
+            - examples/Example1_DistanceArray
           enable-warnings-report: true
+          enable-deltas-report: true
           # verbose: true
 
     # outputs:

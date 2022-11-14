@@ -42,7 +42,7 @@ class SparkFun_VL53L5CX
 {
 private:
     // Sensor's I2C address.
-    uint8_t address = 0;
+    uint8_t _i2cAddress = 0;
 
     // Error callback function pointer.
     // Function must accept a SF_VL53L5CX_ERROR_TYPE as errorCode and an uint32_t as errorValue.
