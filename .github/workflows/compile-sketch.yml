@@ -14,13 +14,6 @@ jobs:
 
       matrix:
         board:
-          # Uno
-          # https://github.com/arduino/ArduinoCore-avr/blob/master/boards.txt
-          - fqbn: arduino:avr:uno
-            platforms: |
-              - name: arduino:avr
-                source-url: https://downloads.arduino.cc/packages/package_index.json
-
           # ESP32
           # https://github.com/espressif/arduino-esp32/blob/master/boards.txt
           - fqbn: esp32:esp32:esp32
@@ -76,13 +69,6 @@ jobs:
             platforms: |
               - name: rp2040:rp2040
                 source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
-
-          # STM32
-          # https://github.com/arduino/ArduinoCore-mbed/blob/master/boards.txt
-          - fqbn: STMicroelectronics:stm32:GenF1
-            platforms: |
-              - name: STMicroelectronics:stm32
-                source-url: https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json
 
     steps:
       - name: Checkout
