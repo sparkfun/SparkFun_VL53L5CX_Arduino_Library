@@ -74,16 +74,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Branch name
+        run: echo running on branch ${GITHUB_REF##*/}
+
       - name: Compile Sketch
         uses: arduino/compile-sketches@v1
         with:
           platforms: ${{ matrix.board.platforms }}
           fqbn: ${{ matrix.board.fqbn }}
           libraries: |
-            - source-url: https://github.com/${{github.repository}}.git
+            - source-path: ./
           sketch-paths: |
-            - ./
+            - examples/Example1_DistanceArray
           enable-warnings-report: true
+          enable-deltas-report: true
           # verbose: true
 
     # outputs:
